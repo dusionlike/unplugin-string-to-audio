@@ -1,18 +1,14 @@
-<template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
-</template>
-
-<script>
-import HelloWorld from './components/HelloWorld.vue'
-
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+<script setup>
+const au = str2au('测试一下')
+const aul = typeof au === 'string' ? [au] : au
+console.warn(au)
 </script>
+
+<template>
+  <div>
+    <audio v-for="item in aul" :key="item" :src="item" controls />
+  </div>
+</template>
 
 <style>
 #app {

@@ -1,12 +1,13 @@
 import { createUnplugin } from 'unplugin'
+import { runStr2au } from './loader/string-to-audio-loader'
 import type { Options } from './types'
 
 export default createUnplugin<Options>(options => ({
-  name: 'unplugin-starter',
+  name: 'unplugin-string-to-audio',
   transformInclude(id) {
-    return id.endsWith('main.ts')
+    return /(\.vue|\.ts|\.js|\.tsx|\.jsx)$/.test(id)
   },
-  transform(code) {
-    return code.replace('__UNPLUGIN__', `Hello Unplugin! ${options}`)
+  async transform(code) {
+    return await runStr2au(code, options as any)
   },
 }))

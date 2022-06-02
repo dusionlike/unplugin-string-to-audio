@@ -3,9 +3,8 @@ import fs from 'fs'
 import path from 'path'
 import { SpeechConfig, SpeechSynthesisOutputFormat, SpeechSynthesizer } from 'microsoft-cognitiveservices-speech-sdk'
 // import { createUnimport } from 'unimport'
-// import $ from 'gogocode'
-// import * as t from '@babel/types'
-import copyStr2au from './copy-str2au-loader'
+import $ from 'gogocode'
+import type * as t from '@babel/types'
 
 function synthesizeSpeech(text: string, _config: MyConfig) {
   return new Promise<ArrayBuffer>((resolve, reject) => {
@@ -77,20 +76,41 @@ let aumap: AuMap
 
 type AuMap = Record<string, string>
 
+const getStrVal = (node: t.Node) => {
+  if (node.type === 'Identifier') {
+    throw new Error('不支持动态赋值')
+  }
+  else if (node.type === 'TemplateLiteral') {
+    if (node.expressions.length)
+      throw new Error('不支持动态赋值')
+    return node.quasis[0].value.raw
+  }
+  else if (node.type === 'StringLiteral') {
+    return node.value
+  }
+  throw new Error('未知错误')
+}
+
 export async function runStr2au(source: string, config: MyConfig) {
+  const argsx: string[][] = []
+
+  // 查找str2au方法调用，并获取其参数存下来
+  const ast = $(source, { parseOptions: { sourceType: 'module' } })
+    .find('str2au()')
+    .each((item) => {
+      const args = (item.attr('arguments') as t.Node[]).map((it) => {
+        return getStrVal(it).replace(/[\t\r\n]/g, ' ').replace(/\s+/g, ' ').trim()
+      })
+      argsx.push(args)
+    })
+
+  // 不需要处理，直接返回
+  if (!argsx.length)
+    return source
+
   config = { ...def_config, ...config }
 
-  let strlist = source.match(/str2au\([^\)]+?\)/g)
-
-  if (!strlist)
-    return source
-
-  if (config.copyToCompilers && config.copyToCompilers.length)
-    source = copyStr2au(source, strlist, config.copyToCompilers)
-  strlist = source.match(/str2au\([^\)]+?\)/g)
-  if (!strlist)
-    return source
-
+  // 建文件夹和aumap.json
   const temPath = config.temPath
   const auconfigPath = path.join(temPath, 'aumap.json')
   if (!aumap) {
@@ -104,51 +124,11 @@ export async function runStr2au(source: string, config: MyConfig) {
     }
   }
 
-  let rex = ''
+  // 转换的音频路径
+  const resList: (string | string[])[] = []
 
-  /** 文字转语音 */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function str2au(str: string, compilerName?: string) {
-    if (compilerName && !/<.+>.*<\/.+>/s.test(str))
-      str = config.compiler[compilerName](str)
-
-    return [
-      str
-        .replace(/[\t\r\n]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim(),
-      compilerName,
-    ]
-  }
-
-  for (const funStr of strlist) {
-    // $(funStr)
-    //   .find('str2au()')
-    //   .each((item) => {
-    //     const args = (item.attr('arguments') as t.Node[]).map((it) => {
-    //       if (it.type === 'Identifier') {
-    //         throw new Error('不支持动态赋值')
-    //       }
-    //       else if (it.type === 'TemplateLiteral') {
-    //         if (it.expressions.length)
-    //           throw new Error('不支持动态赋值')
-    //         return it.quasis[0].value.raw
-    //       }
-    //       else if (it.type === 'StringLiteral') {
-    //         return it.value
-    //       }
-    //       throw new Error('未知错误')
-    //     })
-    //     str2au(args[0], args[1])
-    //     item.replaceBy()
-    //   })
-    rex = funStr
-    // eslint-disable-next-line no-eval
-    const [str, compilerName] = eval(funStr) as string[]
-
+  async function getAudio(str: string, compilerName?: string) {
     if (!aumap[str] || !fs.existsSync(path.resolve(aumap[str]).replace(/\\/g, '/'))) {
-      // runCount++;
-      // console.log(str);
       const arr = await tryAgain(synthesizeSpeech)(str, config)
       const hs = md5(str)
       if (compilerName) {
@@ -163,17 +143,44 @@ export async function runStr2au(source: string, config: MyConfig) {
       /** 更新json文件 */
       fs.writeFileSync(auconfigPath, JSON.stringify(aumap, null, 2))
     }
-    /** 文本替换 */
-    // source = source.replace(rex, `require("${path.resolve(aumap[str]).replace(/\\/g, '/')}")${config.esModule ? '.default' : ''}`)
-
-    const moduleName = `__${md5(aumap[str])}`
-    // const { injectImports } = createUnimport({
-    //   imports: [{ name: moduleName, from: path.resolve(aumap[str]).replace(/\\/g, '/') }],
-    // })
-    source = `import ${moduleName} from '${path.resolve(aumap[str]).replace(/\\/g, '/')}';${source.replace(rex, moduleName)}`
+    return str
   }
 
-  return source
+  for (const args of argsx) {
+    const [str, compilerName] = args
+
+    // 如果有compilerName，忽略copyToCompilers
+    if (!compilerName && config.copyToCompilers.length) {
+      const res: string[] = []
+      for (const _compilerName of config.copyToCompilers) {
+        const _str = config.compiler[_compilerName](str)
+        res.push(await getAudio(_str, _compilerName))
+      }
+      resList.push(res)
+    }
+    else {
+      resList.push(await getAudio(str, compilerName))
+    }
+  }
+
+  const shuldImportList: string[] = []
+
+  // 替换字符串
+  ast.each((item, index) => {
+    const res = resList[index]
+    if (typeof res === 'string')
+      item.replaceBy(getAudioModuleName(res))
+    else
+      item.replaceBy(`[${res.map(str => getAudioModuleName(str)).toString()}]`)
+  })
+
+  function getAudioModuleName(str: string) {
+    const moduleName = `__${md5(aumap[str])}`
+    shuldImportList.push(`import ${moduleName} from '${path.resolve(aumap[str]).replace(/\\/g, '/')}';`)
+    return moduleName
+  }
+
+  return shuldImportList.join('') + ast.root().generate()
 }
 
 function md5(str: string) {

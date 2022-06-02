@@ -1,10 +1,12 @@
 <script setup lang="ts">
 const au = str2au('测试一下')
+const aul = typeof au === 'string' ? [au] : au
+console.warn(au)
 </script>
 
 <template>
   <div>
-    <audio :src="au" controls />
+    <audio v-for="item in aul" :key="item" :src="item" controls />
   </div>
 </template>
 

@@ -7,4 +7,4 @@ declare module '*.vue' {
   export default component
 }
 
-declare function str2au(str: string): string
+declare function str2au(str: string): string | string[]

@@ -2,7 +2,7 @@
   "name": "unplugin-string-to-audio",
   "version": "0.1.0",
   "packageManager": "pnpm@7.1.1",
-  "description": "Register global imports on demand for Vite and Webpack",
+  "description": "在打包过程中自动将字符串转换为语音文件并添加到最终的打包文件里面, 支持Vite and Webpack",
   "keywords": [
     "unplugin",
     "vite",
@@ -75,6 +75,7 @@
     "eslint": "^8.15.0",
     "esno": "^0.16.3",
     "fast-glob": "^3.2.11",
+    "microsoft-cognitiveservices-speech-sdk": "^1.22.0",
     "nodemon": "^2.0.16",
     "rimraf": "^3.0.2",
     "rollup": "^2.74.0",

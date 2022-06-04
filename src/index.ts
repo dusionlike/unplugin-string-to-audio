@@ -6,6 +6,9 @@ export default createUnplugin<Options>((options, meta) => {
   return {
     name: 'unplugin-string-to-audio',
     transformInclude(id) {
+      // 排除node_modules
+      if (id.includes('node_modules'))
+        return false
       return /(\.vue|\.ts|\.js|\.tsx|\.jsx)$/.test(id)
     },
     async transform(code, id) {

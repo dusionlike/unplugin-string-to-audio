@@ -94,7 +94,6 @@ const getStrVal = (node: t.Node) => {
 export async function runStr2au(source: string, config: MyConfig) {
   const argsx: string[][] = []
 
-  console.warn(source)
   // 查找str2au方法调用，并获取其参数存下来
   const ast = $(source, { parseOptions: { sourceType: 'module' } })
     .find('str2au()')

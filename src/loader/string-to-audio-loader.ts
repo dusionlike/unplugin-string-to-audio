@@ -164,7 +164,7 @@ export async function runStr2au(source: string, config: MyConfig) {
     }
   }
 
-  const shuldImportList: string[] = []
+  const shuldImportList = new Set<string>()
 
   // 替换字符串
   ast.each((item, index) => {
@@ -177,11 +177,11 @@ export async function runStr2au(source: string, config: MyConfig) {
 
   function getAudioModuleName(str: string) {
     const moduleName = `__${md5(aumap[str])}`
-    shuldImportList.push(`import ${moduleName} from '${path.resolve(aumap[str]).replace(/\\/g, '/')}';`)
+    shuldImportList.add(`import ${moduleName} from '${path.resolve(aumap[str]).replace(/\\/g, '/')}';`)
     return moduleName
   }
 
-  return shuldImportList.join('') + ast.root().generate()
+  return `\n${[...shuldImportList].join('\n')}\n${ast.root().generate()}`
 }
 
 function md5(str: string) {

@@ -66,10 +66,12 @@ export default {
 
 ```ts
 // webpack.config.js
+const { default: StringToAudio } = require('unplugin-string-to-audio/webpack')
+
 module.exports = {
   /* ... */
   plugins: [
-    require('unplugin-string-to-audio/webpack')({ /* options */ })
+    StringToAudio({ /* options */ })
   ]
 }
 ```
@@ -81,10 +83,12 @@ module.exports = {
 
 ```ts
 // vue.config.js
+const { default: StringToAudio } = require('unplugin-string-to-audio/webpack')
+
 module.exports = {
   configureWebpack: {
     plugins: [
-      require('unplugin-string-to-audio/webpack')({ /* options */ }),
+      StringToAudio({ /* options */ }),
     ],
   },
 }

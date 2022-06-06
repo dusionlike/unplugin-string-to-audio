@@ -99,7 +99,7 @@ export async function runStr2au(source: string, config: MyConfig) {
     .find('str2au()')
     .each((item) => {
       const args = (item.attr('arguments') as t.Node[]).map((it) => {
-        return getStrVal(it).replace(/[\t\r\n]/g, ' ').replace(/\s+/g, ' ').trim()
+        return getStrVal(it)
       })
       argsx.push(args)
     })
@@ -128,6 +128,7 @@ export async function runStr2au(source: string, config: MyConfig) {
   const resList: (string | string[])[] = []
 
   async function getAudio(str: string, compilerName?: string) {
+    str = str.replace(/[\t\r\n]/g, ' ').replace(/\s+/g, ' ').trim()
     if (!aumap[str] || !fs.existsSync(path.resolve(aumap[str]).replace(/\\/g, '/'))) {
       const arr = await tryAgain(synthesizeSpeech)(str, config)
       const hs = md5(str)

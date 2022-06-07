@@ -1,12 +1,20 @@
 <script setup>
+import { onMounted, ref } from 'vue'
+
 const au = str2au('测试一下')
 const aul = typeof au === 'string' ? [au] : au
 console.warn(au)
+const zz = ref('$$')
+
+onMounted(() => {
+  console.warn(zz.value)
+})
 </script>
 
 <template>
   <div>
     <audio v-for="item in aul" :key="item" :src="item" controls />
+    <span>{{ zz }}</span>
   </div>
 </template>
 

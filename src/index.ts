@@ -20,7 +20,7 @@ export default createUnplugin<Options>((options, meta) => {
           if (jscodes?.length) {
             for (const jscode of jscodes) {
               const resCode = await runStr2au(jscode, options as any)
-              code = code.replace(jscode, resCode)
+              code = code.replace(jscode, () => resCode)
             }
           }
           return code

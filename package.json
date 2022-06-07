@@ -1,7 +1,6 @@
 {
   "name": "unplugin-string-to-audio",
   "version": "1.0.4",
-  "author": "zhangzhixiong",
   "description": "在打包过程中自动将字符串转换为语音文件并添加到最终的打包文件里面, 支持Vite and Webpack",
   "keywords": [
     "unplugin",
@@ -11,6 +10,7 @@
     "transform"
   ],
   "license": "MIT",
+  "author": "zhangzhixiong",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",

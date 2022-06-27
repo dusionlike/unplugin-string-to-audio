@@ -57,7 +57,10 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@rollup/pluginutils": "^4.2.1",
+    "es-module-lexer": "^0.10.5",
     "gogocode": "^1.0.53",
+    "magic-string": "^0.26.2",
     "unplugin": "^0.6.3"
   },
   "devDependencies": {

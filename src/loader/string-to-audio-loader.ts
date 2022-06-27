@@ -91,12 +91,28 @@ const getStrVal = (node: t.Node) => {
   throw new Error('未知错误')
 }
 
-export async function runStr2au(source: string, config: MyConfig) {
+export async function runStr2au(source: string, config: MyConfig, id = '') {
   const argsx: string[][] = []
 
   // 查找str2au方法调用，并获取其参数存下来
-  const ast = $(source, { parseOptions: { sourceType: 'module' } })
-    .find('str2au()')
+  let rootAst: $.GoGoAST
+  let scriptAst: $.GoGoAST
+
+  if (/\.vue/.test(id)) {
+    rootAst = $(source, { parseOptions: { language: 'vue', sourceType: 'module' } })
+    scriptAst = rootAst.find('<script></script>')
+    if (!scriptAst.length) {
+      scriptAst = rootAst.find('<script setup></script>')
+    }
+    if (!scriptAst.length) {
+      return source
+    }
+  } else {
+    rootAst = $(source, { parseOptions: { sourceType: 'module' } })
+    scriptAst = rootAst
+  }
+
+  const ast = scriptAst.find('str2au()')
     .each((item) => {
       const args = (item.attr('arguments') as t.Node[]).map((it) => {
         return getStrVal(it)
@@ -180,8 +196,10 @@ export async function runStr2au(source: string, config: MyConfig) {
     shuldImportList.add(`import ${moduleName} from '${path.resolve(aumap[str]).replace(/\\/g, '/')}';`)
     return moduleName
   }
-
-  return `\n${[...shuldImportList].join('\n')}\n${ast.root().generate()}`
+  
+  // 写入import
+  shuldImportList.forEach((item) => scriptAst.before(item))
+  return rootAst.generate()
 }
 
 function md5(str: string) {

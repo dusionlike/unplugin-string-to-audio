@@ -1,7 +1,7 @@
 const { defineConfig } = require('@vue/cli-service')
-// const stringToAudioPlugin = require('../../dist/webpack.js').default
+const stringToAudioPlugin = require('../../dist/webpack.js').default
 
-const stringToAudioLoader = require.resolve('../../dist/webpack-loader.js')
+// const stringToAudioLoader = require.resolve('../../dist/webpack-loader.js')
 
 const options = {
   /** 密钥 */
@@ -37,16 +37,16 @@ const options = {
 }
 
 module.exports = defineConfig({
-  // configureWebpack: {
-  //   plugins: [stringToAudioPlugin(options)],
-  // },
-  chainWebpack: (config) => {
-    config.module.rule('ts')
-      .use('string-to-audio-loader').after('babel-loader').loader(stringToAudioLoader).options(options).end()
-    config.module.rule('tsx')
-      .use('string-to-audio-loader').after('babel-loader').loader(stringToAudioLoader).options(options).end()
-    config.module.rule('js')
-      .use('string-to-audio-loader').loader(stringToAudioLoader).options(options).end()
-    return config
+  configureWebpack: {
+    plugins: [stringToAudioPlugin(options)],
   },
+  // chainWebpack: (config) => {
+  //   config.module.rule('ts')
+  //     .use('string-to-audio-loader').after('babel-loader').loader(stringToAudioLoader).options(options).end()
+  //   config.module.rule('tsx')
+  //     .use('string-to-audio-loader').after('babel-loader').loader(stringToAudioLoader).options(options).end()
+  //   config.module.rule('js')
+  //     .use('string-to-audio-loader').loader(stringToAudioLoader).options(options).end()
+  //   return config
+  // },
 })

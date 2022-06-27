@@ -5,12 +5,15 @@ importers:
   .:
     specifiers:
       '@antfu/eslint-config': ^0.23.1
+      '@rollup/pluginutils': ^4.2.1
       '@types/node': ^17.0.34
       bumpp: ^7.1.1
+      es-module-lexer: ^0.10.5
       eslint: ^8.15.0
       esno: ^0.16.3
       fast-glob: ^3.2.11
       gogocode: ^1.0.53
+      magic-string: ^0.26.2
       microsoft-cognitiveservices-speech-sdk: ^1.22.0
       nodemon: ^2.0.16
       rimraf: ^3.0.2
@@ -23,7 +26,10 @@ importers:
       vitest: ^0.12.6
       webpack: ^5.72.1
     dependencies:
+      '@rollup/pluginutils': 4.2.1
+      es-module-lexer: 0.10.5
       gogocode: 1.0.53
+      magic-string: 0.26.2
       unplugin: 0.6.3_w6zwfkota6drvvehb6ie6odsvi
     devDependencies:
       '@antfu/eslint-config': 0.23.1_b5e7v2qnwxfo6hmiq56u52mz3e
@@ -1557,7 +1563,6 @@ packages:
     dependencies:
       estree-walker: 2.0.2
       picomatch: 2.3.1
-    dev: true
 
   /@sideway/address/4.1.4:
     resolution: {integrity: sha512-7vwq+rOHVWjyXxVlR76Agnvhy8I9rpzjosTESvmhNeXOXdZZB15Fl+TI9x1SiHZH5Jv2wTGduSxFDIaq0m3DUw==}
@@ -4287,6 +4292,10 @@ packages:
       unbox-primitive: 1.0.2
     dev: true
 
+  /es-module-lexer/0.10.5:
+    resolution: {integrity: sha512-+7IwY/kiGAacQfY+YBhKMvEmyAJnw5grTUgjG85Pe7vcUI/6b7pZjZG8nQ7+48YhzEAEqrEgD2dCz/JIK+AYvw==}
+    dev: false
+
   /es-module-lexer/0.9.3:
     resolution: {integrity: sha512-1HQ2M2sPtxwnvOvT1ZClHyQDiggdNjURWpY2we6aMKCQiUVxTmVs2UYPLIrD84sS+kMdUwfBSylbJPwNnBrnHQ==}
 
@@ -6292,7 +6301,6 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       sourcemap-codec: 1.4.8
-    dev: true
 
   /make-dir/3.1.0:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}

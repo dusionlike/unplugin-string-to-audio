@@ -1,4 +1,4 @@
-# webpack-porject
+# webpack-porject2
 
 ## Project setup
 ```

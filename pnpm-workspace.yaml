@@ -1,2 +1,3 @@
 - packages
-  - playground
+  - playground/vite-project
+  - playground/webpack-project

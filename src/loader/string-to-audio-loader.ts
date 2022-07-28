@@ -101,13 +101,12 @@ export async function runStr2au(source: string, config: MyConfig, id = '') {
   if (/\.vue/.test(id)) {
     rootAst = $(source, { parseOptions: { language: 'vue', sourceType: 'module' } })
     scriptAst = rootAst.find('<script></script>')
-    if (!scriptAst.length) {
+    if (!scriptAst.length)
       scriptAst = rootAst.find('<script setup></script>')
-    }
-    if (!scriptAst.length) {
+    if (!scriptAst.length)
       return source
-    }
-  } else {
+  }
+  else {
     rootAst = $(source, { parseOptions: { sourceType: 'module' } })
     scriptAst = rootAst
   }
@@ -196,9 +195,9 @@ export async function runStr2au(source: string, config: MyConfig, id = '') {
     shuldImportList.add(`import ${moduleName} from '${path.resolve(aumap[str]).replace(/\\/g, '/')}';`)
     return moduleName
   }
-  
+
   // 写入import
-  shuldImportList.forEach((item) => scriptAst.before(item))
+  shuldImportList.forEach(item => scriptAst.before(item))
   return rootAst.generate()
 }
 

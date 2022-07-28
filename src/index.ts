@@ -4,7 +4,7 @@ import { runStr2au } from './loader/string-to-audio-loader'
 import type { Options } from './types'
 // import MagicString from 'magic-string'
 
-export default createUnplugin<Options>((options, meta) => {
+export default createUnplugin<Options>((options) => {
   const filter = createFilter(['**/*.vue', '**/*.ts', '**/*.js', '**/*.tsx', '**/*.jsx'], [/[/\\]node_modules[/\\]/, /[/\\]\.git[/\\]/, /[/\\]\.nuxt[/\\]/])
   return {
     name: 'unplugin-string-to-audio',

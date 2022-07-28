@@ -68,9 +68,10 @@ const def_config = {
   esModule: false,
   compiler: {} as Record<string, Function>,
   copyToCompilers: [] as string[],
+  converter: undefined,
 }
 
-type MyConfig = typeof def_config
+export type MyConfig = typeof def_config
 
 let aumap: AuMap
 
@@ -145,7 +146,7 @@ export async function runStr2au(source: string, config: MyConfig, id = '') {
   async function getAudio(str: string, compilerName?: string) {
     str = str.replace(/[\t\r\n]/g, ' ').replace(/\s+/g, ' ').trim()
     if (!aumap[str] || !fs.existsSync(path.resolve(aumap[str]).replace(/\\/g, '/'))) {
-      const arr = await tryAgain(synthesizeSpeech)(str, config)
+      const arr = await tryAgain(config.converter || synthesizeSpeech)(str, config)
       const hs = md5(str)
       if (compilerName) {
         const ff = path.join(temPath, compilerName || '')

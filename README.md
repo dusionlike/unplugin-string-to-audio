@@ -24,7 +24,12 @@ const options = {
   /** 说话风格 默认customerservice(客服) */
   style: 'cheerful',
   /** 缓存文件的目录，由于create-react-app中限制了scr外的文件引入，所以这里要改成./src/auTem */
-  tmpPath: './src/auTem'
+  tmpPath: './src/auTem',
+  /**
+   * 自定义转换器，返回一个音频数据
+   * (text, options) => Promise<Buffer>
+   */
+  converter: null
 }
 ```
 

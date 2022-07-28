@@ -5,7 +5,7 @@ const stringToAudioPlugin = require('../../dist/webpack.js').default
 
 const options = {
   /** 密钥 */
-  SubscriptionKey: '2b195c5751be49a3a31530026c706a20',
+  SubscriptionKey: '15459205df9c442f9cc71d26430fbbc0',
   /** 区域代码 */
   ServiceRegion: 'eastasia',
   /** 发音人 默认zh-CN-XiaoxiaoNeural */

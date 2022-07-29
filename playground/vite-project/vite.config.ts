@@ -4,7 +4,7 @@ import StringToAudio from '../../src/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [StringToAudio({
+  plugins: [vue(), StringToAudio({
     /** 密钥 */
     SubscriptionKey: '15459205df9c442f9cc71d26430fbbc0',
     /** 区域代码 */
@@ -35,5 +35,5 @@ export default defineConfig({
         `
       },
     },
-  }), vue()],
+  })],
 })

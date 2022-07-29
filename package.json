@@ -1,6 +1,6 @@
 {
   "name": "unplugin-string-to-audio",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "在打包过程中自动将字符串转换为语音文件并添加到最终的打包文件里面, 支持Vite and Webpack",
   "keywords": [
     "unplugin",
@@ -60,7 +60,7 @@
   "dependencies": {
     "@rollup/pluginutils": "^4.2.1",
     "es-module-lexer": "^0.10.5",
-    "gogocode": "^1.0.53",
+    "gogocode": "^1.0.55",
     "magic-string": "^0.26.2",
     "unplugin": "^0.6.3"
   },

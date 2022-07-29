@@ -104,6 +104,10 @@ export async function runStr2au(source: string, config: MyConfig, id = '') {
     scriptAst = rootAst.find('<script></script>')
     if (!scriptAst.length)
       scriptAst = rootAst.find('<script setup></script>')
+    if (!scriptAst.length) {
+      rootAst = $(source, { parseOptions: { sourceType: 'module' } })
+      scriptAst = rootAst
+    }
     if (!scriptAst.length)
       return source
   }

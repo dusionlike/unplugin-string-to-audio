@@ -220,3 +220,7 @@ audio.src = str2au('大家好，我说的是粤语', 'yueyu')
 ```
 
 > 项目根目录`auTem`文件夹里面是语音缓存，当有缓存的时候就不会再调接口，请不要删掉它。
+
+## License
+
+[MIT](./LICENSE) License

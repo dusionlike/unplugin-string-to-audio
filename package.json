@@ -6,8 +6,9 @@
     "unplugin",
     "vite",
     "webpack",
-    "rollup",
-    "transform"
+    "transform",
+    "audio",
+    "文字转语音"
   ],
   "license": "MIT",
   "author": "zhangzhixiong",

@@ -63,7 +63,8 @@
     "es-module-lexer": "^0.10.5",
     "gogocode": "^1.0.55",
     "magic-string": "^0.26.2",
-    "unplugin": "^0.6.3"
+    "microsoft-cognitiveservices-speech-sdk": "^1.33.1",
+    "unplugin": "^1.5.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.23.1",
@@ -72,14 +73,13 @@
     "eslint": "^8.15.0",
     "esno": "^0.16.3",
     "fast-glob": "^3.2.11",
-    "microsoft-cognitiveservices-speech-sdk": "^1.22.0",
     "nodemon": "^2.0.16",
     "rimraf": "^3.0.2",
     "rollup": "^2.74.0",
-    "tsup": "^5.12.8",
+    "tsup": "^7.2.0",
     "typescript": "^4.6.4",
-    "unimport": "^0.2.6",
-    "vite": "^2.9.9",
+    "unimport": "^3.5.0",
+    "vite": "^4.5.0",
     "vitest": "^0.12.6",
     "webpack": "^5.72.1"
   }

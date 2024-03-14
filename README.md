@@ -71,7 +71,6 @@ export default {
 
 <br></details>
 
-
 <details>
 <summary>Webpack</summary><br>
 
@@ -106,7 +105,6 @@ module.exports = {
 ```
 
 <br></details>
-
 
 如果是使用typescript，可能需要添加声明
 ```

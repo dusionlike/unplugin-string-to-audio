@@ -1,0 +1,15 @@
+{
+  // Enable the ESlint flat config support
+  "eslint.experimental.useFlatConfig": true,
+  // Disable the default formatter, use eslint instead
+  "prettier.enable": false,
+  "editor.formatOnSave": false,
+
+  // Auto fix
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "volar.takeOverMode.extension": "vue.vscode-typescript-vue-plugin",
+  "figma.assetExportDirectory": "src/assets",
+  "html.format.wrapAttributes": "preserve"
+}

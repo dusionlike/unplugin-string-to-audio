@@ -1,7 +1,9 @@
-import crypto from 'crypto'
-import fs from 'fs'
-import path from 'path'
+import crypto from 'node:crypto'
+import fs from 'node:fs'
+import path from 'node:path'
+import { Buffer } from 'node:buffer'
 import { SpeechConfig, SpeechSynthesisOutputFormat, SpeechSynthesizer } from 'microsoft-cognitiveservices-speech-sdk'
+
 // import { createUnimport } from 'unimport'
 import $ from 'gogocode'
 import type * as t from '@babel/types'
@@ -77,7 +79,7 @@ let aumap: AuMap
 
 type AuMap = Record<string, string>
 
-const getStrVal = (node: t.Node) => {
+function getStrVal(node: t.Node) {
   if (node.type === 'Identifier') {
     throw new Error('不支持动态赋值')
   }

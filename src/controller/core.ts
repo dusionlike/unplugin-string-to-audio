@@ -84,9 +84,11 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
           auYaml[currentText] = ''
         }
         else {
-          const audioData = await tryAgain(synthesizeSpeech)(ssml, speechConfig)
           const dataPath = path.join(auYamlDir, `${md5(currentText)}.mp3`)
-          fs.writeFileSync(dataPath, Buffer.from(audioData))
+          if (!fs.existsSync(dataPath)) {
+            const audioData = await tryAgain(synthesizeSpeech)(ssml, speechConfig)
+            fs.writeFileSync(dataPath, Buffer.from(audioData))
+          }
           auYaml[currentText] = dataPath.split(/\\/g).join('/')
         }
       }

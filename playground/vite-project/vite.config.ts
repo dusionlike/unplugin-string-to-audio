@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import StringToAudio from '../../src/vite'
+import StringToAudio from 'unplugin-string-to-audio/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -14,26 +14,37 @@ export default defineConfig({
     // name: 'zh-CN-XiaoyouNeural',
     /** 说话风格 默认customerservice(客服) */
     // style: 'customerservice',
-    copyToCompilers: ['kefu', 'yunxi'],
-    compiler: {
-      kefu(text: string) {
-        return `
-    <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-CN">
-        <voice name="zh-CN-XiaoxiaoNeural" style="customerservice">
-          <prosody rate="-10%">${text}</prosody>
-        </voice>
-    </speak>
-        `
+    audioModules: [
+      {
+        name: 'kefu',
+        transformSSML(text) {
+          return `
+          <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-CN">
+              <voice name="zh-CN-XiaoxiaoNeural" style="customerservice">
+                <prosody rate="-10%">${text}</prosody>
+              </voice>
+          </speak>
+              `
+        },
       },
-      yunxi(text: string) {
-        return `
-    <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-CN">
-        <voice name="zh-CN-YunxiNeural">
-            ${text}
-        </voice>
-    </speak>
-        `
+      {
+        name: 'yunxi',
+        transformSSML(text) {
+          return `
+          <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-CN">
+              <voice name="zh-CN-YunxiNeural">
+                  ${text}
+              </voice>
+          </speak>
+              `
+        },
       },
-    },
+      {
+        name: 'yueyu',
+        transformSSML() {
+          return ''
+        },
+      },
+    ],
   })],
 })

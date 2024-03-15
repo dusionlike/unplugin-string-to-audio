@@ -202,8 +202,7 @@ audio.src = str2au('大家好，我说的是粤语', 'yueyu')
 |**style**|说话风格，默认customerservice(客服)|String|见[调整讲话风格](https://docs.microsoft.com/zh-cn/azure/cognitive-services/speech-service/speech-synthesis-markup?tabs=csharp#adjust-speaking-styles)|customerservice|
 |**outputFormat**|输出文件类型|Number|见[Fields](https://docs.microsoft.com/zh-cn/javascript/api/microsoft-cognitiveservices-speech-sdk/speechsynthesisoutputformat?view=azure-node-latest#fields)|3|
 |**temPath**|缓存文件的目录，由于create-react-app中限制了scr外的文件引入，所以这里要改成./src/auTem|String|-|./src/auTem|
-|**esModule**|file-loader是否开启了`esModule`，如果require返回{default:string}，则要设置成true|Boolean|boolean|false|
-|**compiler**|预处理器|Object|无|无|
+|**audioModules**|处理多种语音|AudioModule|无|无|
 
 ## 注意
 

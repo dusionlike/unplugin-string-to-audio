@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const au = str2au('测试一下')
+const au3 = str2au('测试: 一"下"3')
 const aul = typeof au === 'string' ? [au] : au
+console.warn(au3)
 console.warn(au)
 </script>
 

@@ -1,7 +1,7 @@
 {
   "name": "unplugin-string-to-audio",
   "type": "module",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "在打包过程中自动将字符串转换为语音文件并添加到最终的打包文件里面, 支持Vite and Webpack",
   "author": "zhangzhixiong",
   "license": "MIT",

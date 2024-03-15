@@ -59,13 +59,13 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
     for (const audioModule of config.audioModules) {
       // 转换文字
       const currentText = audioModule.transformText
-        ? audioModule.transformText(argumentsValue)
+        ? await audioModule.transformText(argumentsValue)
         : argumentsValue
 
       let ssml = ''
 
       if (audioModule.transformSSML) {
-        ssml = audioModule.transformSSML(currentText)
+        ssml = await audioModule.transformSSML(currentText)
       }
       else {
         ssml = `

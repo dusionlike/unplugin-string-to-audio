@@ -2,8 +2,8 @@ import type { SpeechSynthesisOutputFormat } from 'microsoft-cognitiveservices-sp
 
 export interface AudioModule {
   name: string
-  transformSSML?: (ssml: string) => string
-  transformText?: (text: string) => string
+  transformSSML?: (ssml: string) => string | Promise<string>
+  transformText?: (text: string) => string | Promise<string>
 }
 
 export interface Options {

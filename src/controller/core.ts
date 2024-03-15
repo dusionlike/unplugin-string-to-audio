@@ -44,6 +44,8 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
       auYamlMap[audioModule.name] = YAML.parse(fs.readFileSync(auYamlPath, 'utf8')) as Record<string, string>
   }
 
+  const audioSet = new Set<string>()
+
   for (const callExpressionNode of analyzed.callExpressionNodes) {
     if (callExpressionNode.arguments[0].type !== 'Literal')
       throw new Error('不支持动态赋值')
@@ -84,7 +86,7 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
           auYaml[currentText] = ''
         }
         else {
-          const dataPath = path.join(auYamlDir, `${md5(currentText)}.mp3`)
+          const dataPath = path.join(auYamlDir, `${md5(`${audioModule.name}_${currentText}`)}.mp3`)
           if (!fs.existsSync(dataPath)) {
             const audioData = await tryAgain(synthesizeSpeech)(ssml, speechConfig)
             fs.writeFileSync(dataPath, Buffer.from(audioData))
@@ -93,7 +95,10 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
         }
       }
 
-      audioList.push(auYaml[currentText])
+      if (!audioSet.has(auYaml[currentText])) {
+        audioList.push(auYaml[currentText])
+        audioSet.add(auYaml[currentText])
+      }
     }
 
     // 最上方添加 import

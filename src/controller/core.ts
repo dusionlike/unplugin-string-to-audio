@@ -7,6 +7,7 @@ import MagicString from 'magic-string'
 import YAML from 'yaml'
 import type { AudioModule, Options } from '../types'
 import type { Analyzed } from './analyze'
+import { SimpleQueue } from './queue'
 
 const def_config = {
   SubscriptionKey: '',
@@ -16,6 +17,19 @@ const def_config = {
   outputFormat: SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3,
   temPath: './src/auTem',
   audioModules: [{ name: 'default' }] as AudioModule[],
+}
+
+const queue = new SimpleQueue()
+
+function saveCacheYml(filePath: string, data: Record<string, string>) {
+  queue.addTask(async () => {
+    let oldData: Record<string, string> = {}
+    if (fs.existsSync(filePath))
+      oldData = YAML.parse(await fs.promises.readFile(filePath, 'utf8')) || {}
+
+    const newData = { ...oldData, ...data }
+    await fs.promises.writeFile(filePath, YAML.stringify(newData))
+  })
 }
 
 export async function runStr2au(analyzed: Analyzed, options?: Options) {
@@ -41,7 +55,7 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
     if (!fs.existsSync(auYamlPath))
       auYamlMap[audioModule.name] = {}
     else
-      auYamlMap[audioModule.name] = YAML.parse(fs.readFileSync(auYamlPath, 'utf8')) as Record<string, string>
+      auYamlMap[audioModule.name] = YAML.parse(await fs.promises.readFile(auYamlPath, 'utf8')) as Record<string, string> || {}
   }
 
   const audioSet = new Set<string>()
@@ -89,7 +103,7 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
           const dataPath = path.join(auYamlDir, `${md5(`${audioModule.name}_${currentText}`)}.mp3`)
           if (!fs.existsSync(dataPath)) {
             const audioData = await tryAgain(synthesizeSpeech)(ssml, speechConfig)
-            fs.writeFileSync(dataPath, Buffer.from(audioData))
+            fs.promises.writeFile(dataPath, Buffer.from(audioData))
           }
           auYaml[currentText] = dataPath.split(/\\/g).join('/')
         }
@@ -122,7 +136,7 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
     const auYamlDir = auYamlDirMap[audioModule.name]
     const auYaml = auYamlMap[audioModule.name]
     const auYamlPath = path.join(auYamlDir, `${audioModule.name}.yaml`)
-    fs.writeFileSync(auYamlPath, YAML.stringify(auYaml))
+    saveCacheYml(auYamlPath, auYaml)
   }
 
   return {

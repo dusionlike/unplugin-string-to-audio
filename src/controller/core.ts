@@ -23,6 +23,12 @@ const queue = new SimpleQueue()
 
 function saveCacheYml(filePath: string, data: Record<string, string>) {
   queue.addTask(async () => {
+    // 清理data中的空字符串
+    for (const key in data) {
+      if (!data[key])
+        delete data[key]
+    }
+
     let oldData: Record<string, string> = {}
     if (fs.existsSync(filePath))
       oldData = YAML.parse(await fs.promises.readFile(filePath, 'utf8')) || {}

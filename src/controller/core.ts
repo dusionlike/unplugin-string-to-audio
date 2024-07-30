@@ -120,6 +120,8 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
 
     // 最上方添加 import
     const importNameList = audioList.filter(Boolean).map((item) => {
+      if (item.startsWith('http:') || item.startsWith('data:') || item.startsWith('file:'))
+        return `'${item}'`
       const moduleName = `__${md5(item)}`
       ms.prepend(`import ${moduleName} from '${path.resolve(item).replace(/\\/g, '/')}'\n`)
       return moduleName

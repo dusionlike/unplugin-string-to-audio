@@ -121,14 +121,14 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
     // 最上方添加 import
     const importNameList = audioList.map((item) => {
       if (!item || item.startsWith('http:') || item.startsWith('data:') || item.startsWith('file:'))
-        return item
+        return `'${item}'`
       const moduleName = `__${md5(item)}`
       ms.prepend(`import ${moduleName} from '${path.resolve(item).replace(/\\/g, '/')}'\n`)
       return moduleName
     })
 
     // 替换代码
-    const audioListStr = JSON.stringify(importNameList)
+    const audioListStr = `[${importNameList.join(', ')}]`
 
     // eslint-disable-next-line ts/ban-ts-comment
     // @ts-expect-error

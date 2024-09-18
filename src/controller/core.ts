@@ -119,16 +119,16 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
     }
 
     // 最上方添加 import
-    const importNameList = audioList.filter(Boolean).map((item) => {
-      if (item.startsWith('http:') || item.startsWith('data:') || item.startsWith('file:'))
-        return `'${item}'`
+    const importNameList = audioList.map((item) => {
+      if (!item || item.startsWith('http:') || item.startsWith('data:') || item.startsWith('file:'))
+        return item
       const moduleName = `__${md5(item)}`
       ms.prepend(`import ${moduleName} from '${path.resolve(item).replace(/\\/g, '/')}'\n`)
       return moduleName
     })
 
     // 替换代码
-    const audioListStr = `[${importNameList.join(', ')}]`
+    const audioListStr = JSON.stringify(importNameList)
 
     // eslint-disable-next-line ts/ban-ts-comment
     // @ts-expect-error

@@ -106,16 +106,13 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
           const dataPath = path.join(auYamlDir, `${md5(`${audioModule.name}_${currentText}`)}.mp3`)
           if (!fs.existsSync(dataPath)) {
             const audioData = await tryAgain(synthesizeSpeech)(ssml, speechConfig)
-            fs.promises.writeFile(dataPath, Buffer.from(audioData))
+            await fs.promises.writeFile(dataPath, Buffer.from(audioData))
           }
           auYaml[currentText] = dataPath.split(/\\/g).join('/')
         }
       }
 
-      if (!audioSet.has(auYaml[currentText])) {
-        audioList.push(auYaml[currentText])
-        audioSet.add(auYaml[currentText])
-      }
+      audioList.push(auYaml[currentText])
     }
 
     // 最上方添加 import
@@ -123,7 +120,10 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
       if (!item || item.startsWith('http:') || item.startsWith('data:') || item.startsWith('file:'))
         return `'${item}'`
       const moduleName = `__${md5(item)}`
-      ms.prepend(`import ${moduleName} from '${path.resolve(item).replace(/\\/g, '/')}'\n`)
+      if (!audioSet.has(moduleName)) {
+        audioSet.add(moduleName)
+        ms.prepend(`import ${moduleName} from '${path.resolve(item).replace(/\\/g, '/')}'\n`)
+      }
       return moduleName
     })
 

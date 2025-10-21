@@ -179,6 +179,7 @@ function md5(str: string) {
 
 const sleep = (timeout: number) => new Promise(resolve => setTimeout(resolve, timeout))
 
+// eslint-disable-next-line ts/no-unsafe-function-type
 function tryAgain<T extends Function>(fn: T, againCount = 10): T {
   const fn2 = async (...args: any[]): Promise<any> => {
     try {

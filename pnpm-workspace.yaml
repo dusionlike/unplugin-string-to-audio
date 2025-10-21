@@ -1,3 +1,8 @@
 packages:
   - playground/vite-project
   - playground/webpack-project
+
+onlyBuiltDependencies:
+  - core-js
+  - esbuild
+  - unrs-resolver

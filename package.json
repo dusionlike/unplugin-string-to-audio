@@ -117,7 +117,7 @@
   },
   "dependencies": {
     "@rollup/pluginutils": "^5.1.0",
-    "unplugin": "^1.5.1"
+    "unplugin": "^2.3.10"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.2.2",
@@ -136,11 +136,11 @@
     "nodemon": "^3.0.2",
     "rimraf": "^5.0.5",
     "rollup": "^4.6.1",
-    "tsup": "^8.0.1",
+    "tsup": "^8.5.0",
     "typescript": "^5.3.2",
-    "vite": "^5.0.4",
-    "vitest": "^0.34.6",
+    "vite": "^7.1.11",
+    "vitest": "^3.2.4",
     "webpack": "^5.89.0",
-    "yaml": "^2.4.1"
+    "yaml": "^2.8.1"
   }
 }

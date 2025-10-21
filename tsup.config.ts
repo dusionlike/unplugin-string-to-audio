@@ -9,4 +9,10 @@ export default <Options>{
   dts: true,
   onSuccess: 'npm run build:fix',
   external: ['microsoft-cognitiveservices-speech-sdk'],
+  platform: 'node',
+  target: 'node20',
+  shims: true,
+  banner: {
+    js: 'import { createRequire } from "module";const require = createRequire(import.meta.url);',
+  },
 }

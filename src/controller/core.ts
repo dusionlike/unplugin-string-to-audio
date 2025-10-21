@@ -67,8 +67,8 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
     if (callExpressionNode.arguments[0].type !== 'Literal')
       throw new Error('不支持动态赋值')
 
-    const argumentsValue = callExpressionNode.arguments[0].value
-    if (typeof argumentsValue !== 'string')
+    const oriText = callExpressionNode.arguments[0].value
+    if (typeof oriText !== 'string')
       throw new Error('参数类型错误')
 
     const audioList: string[] = []
@@ -76,43 +76,45 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
     for (const audioModule of config.audioModules) {
       // 转换文字
       const currentText = audioModule.transformText
-        ? await audioModule.transformText(argumentsValue)
-        : argumentsValue
+        ? await audioModule.transformText(oriText)
+        : oriText
 
       let ssml = ''
 
-      if (audioModule.transformSSML) {
-        ssml = await audioModule.transformSSML(currentText)
-      }
-      else {
-        ssml = `
+      if (currentText) {
+        if (audioModule.transformSSML) {
+          ssml = await audioModule.transformSSML(currentText)
+        }
+        else {
+          ssml = `
         <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-CN">
             <voice name="${config.name}" style="${config.style}">
                 ${currentText}
             </voice>
         </speak>
         `
+        }
       }
 
       const auYamlDir = auYamlDirMap[audioModule.name]
       const auYaml = auYamlMap[audioModule.name]
 
-      if (!auYaml[currentText]) {
+      if (!auYaml[oriText]) {
         if (!ssml) {
           // 允许用户自定义空字符串
-          auYaml[currentText] = ''
+          auYaml[oriText] = ''
         }
         else {
-          const dataPath = path.join(auYamlDir, `${md5(`${audioModule.name}_${currentText}`)}.mp3`)
+          const dataPath = path.join(auYamlDir, `${md5(`${audioModule.name}_${oriText}`)}.mp3`)
           if (!fs.existsSync(dataPath)) {
             const audioData = await tryAgain(synthesizeSpeech)(ssml, speechConfig)
             await fs.promises.writeFile(dataPath, Buffer.from(audioData))
           }
-          auYaml[currentText] = dataPath.split(/\\/g).join('/')
+          auYaml[oriText] = dataPath.split(/\\/g).join('/')
         }
       }
 
-      audioList.push(auYaml[currentText])
+      audioList.push(auYaml[oriText])
     }
 
     // 最上方添加 import

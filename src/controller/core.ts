@@ -105,7 +105,7 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
           auYaml[oriText] = ''
         }
         else {
-          const dataPath = path.join(auYamlDir, `${md5(`${audioModule.name}_${oriText}`)}.mp3`)
+          const dataPath = path.join(auYamlDir, `${md5(`${audioModule.name}_${currentText}`)}.mp3`)
           if (!fs.existsSync(dataPath)) {
             const audioData = await tryAgain(synthesizeSpeech)(ssml, speechConfig)
             await fs.promises.writeFile(dataPath, Buffer.from(audioData))

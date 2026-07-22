@@ -21,18 +21,46 @@ const def_config = {
 
 const queue = new SimpleQueue()
 
-function saveCacheYml(filePath: string, data: Record<string, string>) {
-  queue.addTask(async () => {
+async function saveCacheYml(filePath: string, data: Record<string, string>) {
+  await queue.addTask(async () => {
+    await fs.promises.mkdir(path.dirname(filePath), { recursive: true })
+
+    const fileExists = fs.existsSync(filePath)
     let localData: Record<string, string> = {}
-    if (fs.existsSync(filePath))
+    if (fileExists)
       localData = YAML.parse(await fs.promises.readFile(filePath, 'utf8')) || {}
 
+    let changed = !fileExists
     for (const key in data) {
-      if (data[key] || localData[key] === undefined)
+      if ((data[key] || localData[key] === undefined) && localData[key] !== data[key]) {
         localData[key] = data[key]
+        changed = true
+      }
     }
-    await fs.promises.writeFile(filePath, YAML.stringify(localData))
+
+    if (changed)
+      await writeFileWithRetry(filePath, YAML.stringify(localData))
   })
+}
+
+async function writeFileWithRetry(filePath: string, data: string) {
+  const retryableCodes = new Set(['UNKNOWN', 'EBUSY', 'EPERM', 'EACCES'])
+  const retryDelays = [20, 50, 100, 200, 400]
+
+  for (let attempt = 0; ; attempt++) {
+    try {
+      await fs.promises.writeFile(filePath, data)
+      return
+    }
+    catch (error) {
+      const code = error instanceof Error && 'code' in error
+        ? (error as NodeJS.ErrnoException).code
+        : undefined
+      if (!code || !retryableCodes.has(code) || attempt >= retryDelays.length)
+        throw error
+      await new Promise(resolve => setTimeout(resolve, retryDelays[attempt]))
+    }
+  }
 }
 
 export async function runStr2au(analyzed: Analyzed, options?: Options) {
@@ -143,7 +171,7 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
     const auYamlDir = auYamlDirMap[audioModule.name]
     const auYaml = auYamlMap[audioModule.name]
     const auYamlPath = path.join(auYamlDir, `${audioModule.name}.yaml`)
-    saveCacheYml(auYamlPath, auYaml)
+    await saveCacheYml(auYamlPath, auYaml)
   }
 
   return {

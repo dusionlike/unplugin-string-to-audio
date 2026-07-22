@@ -1,30 +1,43 @@
 type TaskFn = () => (void | Promise<void>)
 
+interface QueueItem {
+  task: TaskFn
+  resolve: () => void
+  reject: (error: unknown) => void
+}
+
 export class SimpleQueue {
-  private queue: Array<TaskFn> = []
+  private queue: QueueItem[] = []
   private isProcessing: boolean = false
 
-  async addTask(task: TaskFn) {
-    this.queue.push(task)
-    this.processQueue()
+  addTask(task: TaskFn): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.queue.push({ task, resolve, reject })
+      void this.processQueue()
+    })
   }
 
   private async processQueue() {
-    if (this.isProcessing || this.queue.length === 0)
+    if (this.isProcessing)
       return
 
     this.isProcessing = true
     try {
-      const task = this.queue.shift()
-      if (task)
-        await task()
-    }
-    catch (error) {
-      console.error('An error occurred while processing the task:', error)
+      while (this.queue.length > 0) {
+        const item = this.queue.shift()
+        if (!item)
+          break
+        try {
+          await item.task()
+          item.resolve()
+        }
+        catch (error) {
+          item.reject(error)
+        }
+      }
     }
     finally {
       this.isProcessing = false
-      this.processQueue()
     }
   }
 }

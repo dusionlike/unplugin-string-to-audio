@@ -127,10 +127,10 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
       const auYamlDir = auYamlDirMap[audioModule.name]
       const auYaml = auYamlMap[audioModule.name]
 
-      if (!auYaml[oriText]) {
+      if (!auYaml[currentText]) {
         if (!ssml) {
           // 允许用户自定义空字符串
-          auYaml[oriText] = ''
+          auYaml[currentText] = ''
         }
         else {
           const dataPath = path.join(auYamlDir, `${md5(`${audioModule.name}_${currentText}`)}.mp3`)
@@ -138,11 +138,11 @@ export async function runStr2au(analyzed: Analyzed, options?: Options) {
             const audioData = await tryAgain(synthesizeSpeech)(ssml, speechConfig)
             await fs.promises.writeFile(dataPath, Buffer.from(audioData))
           }
-          auYaml[oriText] = dataPath.split(/\\/g).join('/')
+          auYaml[currentText] = dataPath.split(/\\/g).join('/')
         }
       }
 
-      audioList.push(auYaml[oriText])
+      audioList.push(auYaml[currentText])
     }
 
     // 最上方添加 import
